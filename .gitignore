@@ -1,0 +1,61 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+*.so
+
+# Docker
+*.log
+*.pid
+*.db
+*.sqlite3
+
+# Entorno virtual
+venv/
+env/
+ENV/
+.venv/
+*.env
+
+# Archivos de configuración
+*.env
+*.env.*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDEs y editores de texto
+.vscode/
+.idea/
+
+# Archivos de compilación
+*.egg-info/
+*.dist-info/
+dist/
+build/
+eggs/
+
+# Archivos generados por herramientas de Python
+*.coverage
+*.hypothesis/
+.coverage.*
+
+# Logs
+*.log
+
+# Directorios de configuración de test
+.nox/
+.coverage/
+nosetests.xml
+pytest.xml
+*.coveragerc
+*.tox/
+
+# Archivos de configuración de Docker
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# Archivos de dependencia de Python
+Pipfile.lock

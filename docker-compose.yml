@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - MONGODB_URL=${MONGODB_URL}
+      - DB_NAME=${DB_NAME}
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/app
+    networks:
+      - backend-network
+
+  mongodb:
+    image: mongo:latest
+    command: ["mongod", "--quiet"]  
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
