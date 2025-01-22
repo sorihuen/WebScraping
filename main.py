@@ -1,10 +1,6 @@
 from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
-from routers import users, jwt_auth_users
 from fastapi.middleware.cors import CORSMiddleware
-
-
-
+from routers import users, jwt_auth_users, scraping
 
 app = FastAPI()
 
@@ -17,9 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(users.router)
 app.include_router(jwt_auth_users.router)
-
-
+app.include_router(scraping.router)
 
