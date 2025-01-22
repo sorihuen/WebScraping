@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from db.client import db_client  
 from db.models.scrape import Quote
 from db.models.user import User
+from db.schemas.scrape import QuoteResponse
 from utils.auth_utils import get_current_user
 from bs4 import BeautifulSoup
 import requests
@@ -53,8 +54,7 @@ def scrape_and_save(url: str):
         raise HTTPException(status_code=500, detail=f"Error al procesar los datos: {str(e)}")
     
 
-
-@router.get("/list", response_model=list[Quote])
+@router.get("/list", response_model=list[QuoteResponse])  
 async def list_quotes(_current_user: User = Depends(get_current_user)):
     """
     Recupera todas las citas guardadas en la base de datos y las devuelve como una lista.
@@ -68,9 +68,9 @@ async def list_quotes(_current_user: User = Depends(get_current_user)):
         quotes = []
         for quote in quotes_data:
             quote["_id"] = str(quote["_id"])  # Convertir ObjectId a string
-            quotes.append(Quote(**quote))  # Crear instancia del modelo Quote
+            quotes.append(QuoteResponse(**quote))  # Usar QuoteResponse en lugar de Quote
         
-        return quotes  # Nota: Ya no necesitamos wrapped en {"quotes": ...} debido al response_model
+        return quotes
     
     except Exception as e:
         raise HTTPException(
@@ -78,31 +78,24 @@ async def list_quotes(_current_user: User = Depends(get_current_user)):
             detail=f"Error al recuperar los datos: {str(e)}"
         )
 
-@router.get("/{id}")
+@router.get("/{id}", response_model=QuoteResponse)
 async def get_quote_by_id(id: str, _current_user: User = Depends(get_current_user)):
-    """
-    Recupera una cita específica de la base de datos basada en su ID.
-    Solo usuarios autorizados pueden acceder.
-    """
     try:
-        # Validar si el ID es un ObjectId válido
         if not ObjectId.is_valid(id):
             raise HTTPException(status_code=400, detail="El ID proporcionado no es válido.")
         
-        # Conectar a la colección de citas en MongoDB
         quotes_collection = db_client["quotes"]
-        
-        # Buscar la cita por ID
         quote_data = quotes_collection.find_one({"_id": ObjectId(id)})
 
         if not quote_data:
             raise HTTPException(status_code=404, detail="No se encontró la cita con el ID proporcionado.")
         
-        # Convertir `_id` a string y devolver como instancia del modelo
+        # Convertir ObjectId a string
         quote_data["_id"] = str(quote_data["_id"])
-        return Quote(**quote_data)
+        
+        return QuoteResponse(**quote_data)
         
     except HTTPException as http_exc:
-        raise http_exc  # Relevantar errores HTTP definidos
+        raise http_exc
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al recuperar la cita: {str(e)}")
