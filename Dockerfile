@@ -18,15 +18,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el resto de la aplicación
-COPY . .
+# Para desarrollo, no copiamos el código aquí
+# COPY . .
 
 # Crear un usuario no root
 RUN useradd -m appuser
+RUN chown -R appuser:appuser /app
 USER appuser
 
 # Exponer el puerto que usará FastAPI
 EXPOSE 8000
 
-# Comando para ejecutar la aplicación
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Comando para ejecutar la aplicación con hot-reload
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
