@@ -17,7 +17,7 @@ load_dotenv()
 
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_DURATION = 1
+ACCESS_TOKEN_DURATION = 5
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 router = APIRouter(prefix="/jwtauth",

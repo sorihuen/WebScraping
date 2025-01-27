@@ -18,7 +18,7 @@ services:
 
   mongodb:
     image: mongo:latest
-    command: ["mongod", "--quiet"]  
+    command: ["mongod", "--quiet", "--logpath", "/dev/null"]
     volumes:
       - mongodb_data:/data/db
     networks:
